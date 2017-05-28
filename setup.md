@@ -24,7 +24,13 @@ Run the following command in your terminal:
 brew install scala apache-spark
 ```
 
-You're all set! Now you can run `spark-shell`, which launches a shell for running Spark on your machine (it is a very well-named command). 
+4. Alias spark-shell command to include context:
+Add the following to your ./bashrc (or ./zshrc)
+```
+alias spark-shell='/usr/local/bin/spark-shell'
+```
+
+You're all set! Now you can run `spark-shell` to launch apache-spark.
 
 Footnotes
 1. I recommend iTerm. Here's a great config: link
@@ -32,4 +38,4 @@ Footnotes
 3. xcode-select lets you access a bunch of necessary command line tools.
 4. Why? Because Scala runs on Java. Do you wanna ask questions or get set up fast?
 5. The scala repl as a standalone is useful for playing around/learning the language, but the hope is that (eventually) we'll be spending most of our time in the spark shell.
-6. Installing apache-spark enables the command `spark-shell` (see above)
+6. Installing apache-spark enables the command `spark-shell` (see above), which launches a shell for running spark on your machine. It is a very well-named command.
