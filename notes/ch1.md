@@ -53,6 +53,13 @@ More:
 * `(1 − 1/x)^x` ~ `1/e`.
 
 Some other useful approximations follow from the Taylor expansion of e^x.
-* e^x = ∑i=0,inf x^i/i!, or `e^x = 1+ x + x^2/2 + x^3/6...`
+* e^x = ∑i=0,inf x^i/i!, or `e^x = 1 + x + x^2/2 + x^3/6...`
   - When x is large, the above series converges slowly, although it does converge because n! grows faster than xn for any constant x.
   - However, when x is small, either positive or negative, the series converges rapidly, and only a few terms are necessary to get a good approximation.
+  - Examples:
+    * If x = 0.5, then
+    e^0.5 = 1 + 1/2 + 1/8 + 1/48 + 1/348... => ~1.64844
+    * If x = -1, then
+    e^-1 = 1 - 1 + 1/2 - 1/6 + 1/24 - 1/20 + 1/720... => ~0.36786
+
+6. Power Laws
