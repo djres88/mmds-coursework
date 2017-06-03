@@ -69,4 +69,13 @@ The Map function takes an input element as its argument and produces 0 or more k
 ###iii. PART 3: Reduce Tasks
 So we see that a Reduce function's argument is a pair consisting of a key and its list of associated values.
 
-The output of a the
+* The output of a the Reduce function is a sequence of 0 or more k-v pairs.   
+  - (The application of a Reduce function to a single key-list is a *reducer*.)
+  - A single Reduce task has many reducers
+* The outputs from all Reduce tasks are merged into a single file.
+
+####Example: Words Across Documents (Reducer)
+In the word counting example, the reduce function adds up values.
+  - The output of a single reducer is the word and its sum.
+  - The output of a Reduce task is a partial sequence of (word, count) pairs
+  - The output of all Reduce tasks is a sequence of (word, count) pairs
