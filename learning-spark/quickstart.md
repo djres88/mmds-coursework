@@ -42,46 +42,42 @@ Now, every time you run spark-shell, the metastore_db and derby.log files will b
 
 
 ###Project Setup
-Let's set up a new project directory and work from there. Create a directory called HelloSpark (or whatever you want to call this ) and cd into it.
-```bash
-mkdir HelloSpark
-```
+We're ready to set up a project. Let's grab a big text file so that we can start playing with spark-shell! 
 
-Cool beans. Let's go into the spark shell. 
-```bash
-spark-shell
-```
-Great. Now run the command:
-```scala
-scala> val shakespeare = sc.shakespeare("input.txt")
-shakespeare: spark.RDD[String] = spark.MappedRDD@2ee9b6e3
-```
-We just attempted to create an RDD (you'll learn about these in a sec) using the "input.txt" file.
+Following the hadoop intro assignment from a course I'm taking -- see mmds at https://lagunita.stanford.edu/courses/course-v1:ComputerScience+MMDS+Fall2016/about -- I'll use the complete works of Shakespeare. You should feel free to choose any file you want, though. Basketball play by play logs? Song lyrics? Abset strange formatting issues, any massive any text file will do. 
 
-Let's grab a big text file so that we can start playing with spark-shell! Following the hadoop intro assignment from a course I'm taking -- see mmds at https://lagunita.stanford.edu/courses/course-v1:ComputerScience+MMDS+Fall2016/about -- I'll user the complete works of Shakespeare, but feel free to choose any file you want. To get the Shakespeare file, run the following in your terminal:
+To get the Shakespeare file, run the following in your terminal:
 ```bash
 `curl http://www.gutenberg.org/cache/epub/100/pg100.txt | perl -pe 's/^\xEF\xBB \xBF//' > input.txt`
 ```
 
-NOTE: The following is all based on / largely taken from the quickstart, with edits and clarifications where applicable.
-##A. Basics
-* Spark’s primary abstraction is a distributed collection of items called a Resilient Distributed Dataset (RDD). 
+Now we have our input file. Let's see what's in there.
+
+ATTRIBUTION NOTE: The following is all based on / largely taken from the quickstart, with edits and clarifications where applicable.
+##A. Spark & `spark-shell` Basics
+To start up the spark-shell, run `spark-shell`. You should see logs, followed by a command prompt (`>scala`). Minor warnings are normal, errors are not. 
+
+So what's here?
+* Spark’s primary abstraction is a distributed collection of items called a *Resilient Distributed Dataset (RDD)*.
     - RDDs can be created from Hadoop InputFormats (such as HDFS files) or by transforming other RDDs. 
-    - For example, to create a new RDD from an input file (which in our case contains the complete works of Shakespeare), you could
+    - For example, to create a new RDD from an input file (which in our case contains the complete works of Shakespeare), you could transform the input file to an RDD as follows:
 ```scala
 scala> val shakespeare = sc.shakespeare("input.txt")
 shakespeare: spark.RDD[String] = spark.MappedRDD@2ee9b6e3
 ```
+* What can you do with an RDD?
     - RDDs have *actions* (which return values) and *transformations* (which return pointers to new RDDs)
-* Actions return values. For example
-```
+    - Rough analogy: You can think of actions as "properties" and transformations as "methods", if that lingo seems more familiar
+    - **Actions** return values. For example
+```scala
 scala> shakespeare.count() // Number of items in this RDD
 res0: Long = 126
 
 scala> shakespeare.first() // First item in this RDD
 res1: String = # Apache Spark
 ```
-* Transformations return pointers to new RDDs. For example
+    - **Transformations** return pointers to new RDDs. For example
+    
 ```scala
 scala> val romeo = shakespeare.filter(line => line.contains("Romeo"))
 linesWithSpark: spark.RDD[String] = spark.FilteredRDD@7dd4af09
