@@ -63,7 +63,7 @@ So what's here?
     - RDDs can be created from Hadoop InputFormats (such as HDFS files) or by transforming other RDDs. 
     - For example, to create a new RDD from an input file (which in our case contains the complete works of Shakespeare), you could transform the input file to an RDD as follows:
 ```scala
-scala> val shakespeare = sc.shakespeare("input.txt")
+scala> val shakespeare = sc.textFile("input.txt")
 shakespeare: spark.RDD[String] = spark.MappedRDD@2ee9b6e3
 ```
 * What can you do with an RDD?
@@ -106,6 +106,79 @@ To find the counts of words starting with each letter:
 scala> val wordCounts = shakespeare.flatMap(line => line.split(" ")).map(word => (if(!word.isEmpty()) word.charAt(0), 1)).reduceByKey((a, b) => a + b)
 scala> wordCounts.collect()
 res8: Array[(AnyVal, Int)] = Array((T,21999), (d,23531), (z,53), (",356), (4,46), (8,15), (L,7216), (p,19344), (R,3865), (B,10894), (6,22), (P,8415), (t,101603), (.,52), (b,34561), (0,6), (h,50511), (2,95), ($,1), ((),506610), (n,21813), (*,24), (f,28819), (j,1593), (J,1746), ((,639), (Z,18), (H,10052), (F,7995), (&,21), (V,1597), (<,248), (r,10400), (X,14), (N,4946), (v,4131), (l,22353), (:,1), (D,6182), (',3804), (s,52643), (e,10431), (Q,1045), (/,2), (G,6079), (M,9443), (7,17), (5,35), (w,44981), (a,63748), (_,1), (O,9293), (i,32292), (y,21879), (A,21088), (u,7667), (#,3), (I,29875), (},2), (o,34201), (k,5789), (9,28), (3,59), (],7), (K,3629), (q,1332), (-,52), (?,2), (S,13062), (C,11071), (E,8266), (Y,3976), (U,1503), (1,458), (g,14703), ([,2073), (W,14616), (m,46233), (c,23496))
+```
+
+##C. Caching
+Spark's caching pulls data into a cluster-wide in-memory cache (i.e. the data is accessible from any node in the cluster). You can easily memcache data that will be accessed repeatedly. Using the above wordCounts example: 
+```scala
+scala> wordCounts.cache()
+res0: wordCounts.type = ShuffledRDD[4] at reduceByKey at <console>:26
+
+scala> wordCounts.count()
+res1: Long = 67780
+
+scala> wordCounts.count()
+res2: Long = 67780
+```
+
+##D. Self-contained Applications
+* See CountingShakespeare.scala and build.sbt
+```scala
+import org.apache.spark.SparkContext
+import org.apache.spark.SparkContext._
+import org.apache.spark.SparkConf
+
+object CountingShakespeare {
+  def main(args: Array[String]) {
+    val logFile = "./input.txt" // Should be some file on your system
+    val conf = new SparkConf().setAppName("Simple Application")
+    val sc = new SparkContext(conf)
+    val logData = sc.textFile(logFile, 2).cache()
+    val numAs = logData.filter(line => line.contains("Lear")).count()
+    val numBs = logData.filter(line => line.contains("Gwendolyn")).count()
+    println(s"Lines with a: $numAs, Lines with b: $numBs")
+    sc.stop()
+  }
+}
+```
+* Note that applications should define a main() method instead of extending scala.App. 
+* Unlike `spark-shell`, which initializes its own `SparkContext` with its own configuration, here we must explicitly initialize a `SparkContext` as part of the program
+    - We pass the SparkContext constructor a SparkConf object which contains information about our application: `val sc = new SparkContext(conf)`
+
+###.sbt
+* Our application depends on the Spark API, so we’ll also include an sbt config file, build.sbt, which explains that Spark is a dependency.
+```scala
+name := "Simple Project"
+version := "1.0"
+scalaVersion := "2.11.7"
+libraryDependencies += "org.apache.spark" %% "spark-core" % "2.1.1"
+```
+###Directory Layout
+* For sbt to work, we’ll need to locate SimpleApp.scala and build.sbt in a typical directory structure. 
+```bash
+# Your directory layout should look like this
+$ find .
+.
+./build.sbt
+./src
+./src/main
+./src/main/scala
+./src/main/scala/SimpleApp.scala
+```
+###JAR
+With the directory structure in place, we can create a JAR package containing the application’s code, then use the spark-submit script to run our program.
+```bash
+# Package a jar containing your application
+$ sbt package
+...
+[info] Packaging {..}/{..}/target/scala-2.11/simple-project_2.11-1.0.jar
+
+# Use spark-submit to run your application
+$ YOUR_SPARK_HOME/bin/spark-submit \
+  --class "SimpleApp" \
+  --master local[4] \
+  target/scala-2.11/simple-project_2.11-1.0.jar
+...
 ```
 
 ###
