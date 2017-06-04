@@ -54,6 +54,7 @@ To get the Shakespeare file, run the following in your terminal:
 Now we have our input file. Let's see what's in there.
 
 ATTRIBUTION NOTE: The following is all based on / largely taken from the quickstart, with edits and clarifications where applicable.
+
 ##A. Spark & `spark-shell` Basics
 To start up the spark-shell, run `spark-shell`. You should see logs, followed by a command prompt (`>scala`). Minor warnings are normal, errors are not. 
 
@@ -71,18 +72,42 @@ shakespeare: spark.RDD[String] = spark.MappedRDD@2ee9b6e3
     - **Actions** return values. For example
 ```scala
 scala> shakespeare.count() // Number of items in this RDD
-res0: Long = 126
+res0: Long = 124787
 
 scala> shakespeare.first() // First item in this RDD
-res1: String = # Apache Spark
+res1: String = The Project Gutenberg EBook of The Complete Works of William Shakespeare, by
 ```
     - **Transformations** return pointers to new RDDs. For example
-    
+
 ```scala
 scala> val romeo = shakespeare.filter(line => line.contains("Romeo"))
 linesWithSpark: spark.RDD[String] = spark.FilteredRDD@7dd4af09
+scala> romeo.count()
+res2: Long = 146
 ```
 
+##B. More RDD Operations & MapReduce Intro
+Find the line with the most words:
+```scala
+scala> shakespeare.map(line => line.split(" ").size).reduce((a, b) => if (a > b) a else b)
+res3: Int = 61
+```
 
+Spark and Scala make super easy work of MapReduce. To find the counts of each word, we can run:
+```scala
+scala> val wordCounts = shakespeare.flatMap(line => line.split(" ")).map(word => (word, 1)).reduceByKey((a, b) => a + b)
+wordCounts: org.apache.spark.rdd.RDD[(String, Int)] = ShuffledRDD[8] at reduceByKey at <console>:26
+wordCounts.collect()
+res4: Array[(String, Int)] = Array((hack'd.,1), (durst,,1), (Ah!,3), (bone,7), (Worthy;,1), (vailing,1), (bombast,1), (person-,1), (LAFEU],1), (fiction.,1), (signal.,1), (Friend,5), (hem,1), (stinks,1), (meets,,1), (shalt.,1), (fuller,2), (Hermione;,1), (Beaufort,,4), (jade,6), (countervail,1), (crying,23), (Sought,2), (intelligencer;,1), (breath,115), (discased,,1), (deep-brained,1), (reclaims,,1), (branches-it,1), (peppercorn,,1), (sinning.,1), (fowl,7), (coat;,3), (OLIVIA,8), (afterward,5), (soon;,1), (pass'd.,5), (harlot's,2), (despite.,2), (abroad-anon,1), (wicked?,4), (inquisition,1), (angels,,2), (unfelt,3), (speak:,4), (Man-ent'red,1), (overkind,1), (Abates,1), (burghers,2), (speaks;,3), (Thunder.,6), (feats;,1), (people!,4), (superscript:,1), (robin,1), (regina,1), (pains;,7), ...
+```
+
+To find the counts of words starting with each letter:
+```scala
+scala> val wordCounts = shakespeare.flatMap(line => line.split(" ")).map(word => (if(!word.isEmpty()) word.charAt(0), 1)).reduceByKey((a, b) => a + b)
+scala> wordCounts.collect()
+res8: Array[(AnyVal, Int)] = Array((T,21999), (d,23531), (z,53), (",356), (4,46), (8,15), (L,7216), (p,19344), (R,3865), (B,10894), (6,22), (P,8415), (t,101603), (.,52), (b,34561), (0,6), (h,50511), (2,95), ($,1), ((),506610), (n,21813), (*,24), (f,28819), (j,1593), (J,1746), ((,639), (Z,18), (H,10052), (F,7995), (&,21), (V,1597), (<,248), (r,10400), (X,14), (N,4946), (v,4131), (l,22353), (:,1), (D,6182), (',3804), (s,52643), (e,10431), (Q,1045), (/,2), (G,6079), (M,9443), (7,17), (5,35), (w,44981), (a,63748), (_,1), (O,9293), (i,32292), (y,21879), (A,21088), (u,7667), (#,3), (I,29875), (},2), (o,34201), (k,5789), (9,28), (3,59), (],7), (K,3629), (q,1332), (-,52), (?,2), (S,13062), (C,11071), (E,8266), (Y,3976), (U,1503), (1,458), (g,14703), ([,2073), (W,14616), (m,46233), (c,23496))
+```
+
+###
 FOOTNOTES
 - Prevent local derby and metastoreDB: https://stackoverflow.com/questions/38377188/how-to-get-rid-of-derby-log-metastore-db-from-spark-shell
