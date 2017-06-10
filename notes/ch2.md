@@ -1,3 +1,5 @@
+NOTE: Testing https://atom.io/packages/markdown-preview-plus
+
 #CHAPTER 2: MapReduce and the New Software Stack
 
 ##Intro
