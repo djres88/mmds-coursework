@@ -1,4 +1,9 @@
-NOTE: Testing https://atom.io/packages/markdown-preview-plus
+NOTE: Testing https://atom.io/packages/markdown-preview-plus and https://github.com/atom-community/markdown-preview-plus/blob/v2.4.9/docs/math.md
+
+\[
+R_{\mu \nu}- {1 \over 2}g_{\mu \nu}\,R + g_{\mu \nu} \Lambda
+= {8 \pi G \over c^4} T_{\mu \nu}
+\]
 
 # CHAPTER 2: MapReduce and the New Software Stack
 
