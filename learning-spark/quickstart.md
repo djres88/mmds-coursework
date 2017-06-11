@@ -1,10 +1,10 @@
 Working on https://spark.apache.org/docs/1.2.0/quick-start.html, w/ a twist to make sure I'm learning it.
 
-#Part I: Spark Shell
+# Part I: Spark Shell
 
-##Intro
+## Intro
 By now you should have all the things installed. **TODO: Write instructions**
-###Shell Setup
+### Shell Setup
 Note: By default, the shell will launch from the directory in which you run `spark-shell`. The Apache "quick start" instructs you to run the shell from the main directory of your spark installation (i.e. `./bin/spark-shell`), but it's reasonably likely that your command will differ based on your machine's setup and how you installed spark. If you used brew to install, for example, the command would be `./usr/local/spark-shell` or `/usr/local/spark-shell`. Our project (see below) will attempt to be agnostic about your setup.
 
 We'll start by creating a new project directory (anywhere you keep your projects) called HelloSpark. Run the following in your terminal:
@@ -41,7 +41,7 @@ alias spark-shell='spark-shell --conf spark.driver.extraJavaOptions=-Dderby.syst
 Now, every time you run spark-shell, the metastore_db and derby.log files will be (temporarily) store in your tmp/derby file. No more messy, unnecessary files in your project directory!
 
 
-###Project Setup
+### Project Setup
 We're ready to set up a project. Let's grab a big text file so that we can start playing with spark-shell!
 
 Following the hadoop intro assignment from a course I'm taking -- see mmds at https://lagunita.stanford.edu/courses/course-v1:ComputerScience+MMDS+Fall2016/about -- I'll use the complete works of Shakespeare. You should feel free to choose any file you want, though. Basketball play by play logs? Song lyrics? Abset strange formatting issues, any massive any text file will do.
@@ -55,7 +55,7 @@ Now we have our input file. Let's see what's in there.
 
 ATTRIBUTION NOTE: The following is all based on / largely taken from the quickstart, with edits and clarifications where applicable.
 
-##A. Spark & `spark-shell` Basics
+## A. Spark & `spark-shell` Basics
 To start up the spark-shell, run `spark-shell`. You should see logs, followed by a command prompt (`>scala`). Minor warnings are normal, errors are not.
 
 So what's here?
@@ -86,7 +86,7 @@ scala> romeo.count()
 res2: Long = 146
 ```
 
-##B. More RDD Operations & MapReduce Intro
+## B. More RDD Operations & MapReduce Intro
 Find the line with the most words:
 ```scala
 scala> shakespeare.map(line => line.split(" ").size).reduce((a, b) => if (a > b) a else b)
@@ -108,7 +108,7 @@ scala> wordCounts.collect()
 res8: Array[(AnyVal, Int)] = Array((T,21999), (d,23531), (z,53), (",356), (4,46), (8,15), (L,7216), (p,19344), (R,3865), (B,10894), (6,22), (P,8415), (t,101603), (.,52), (b,34561), (0,6), (h,50511), (2,95), ($,1), ((),506610), (n,21813), (*,24), (f,28819), (j,1593), (J,1746), ((,639), (Z,18), (H,10052), (F,7995), (&,21), (V,1597), (<,248), (r,10400), (X,14), (N,4946), (v,4131), (l,22353), (:,1), (D,6182), (',3804), (s,52643), (e,10431), (Q,1045), (/,2), (G,6079), (M,9443), (7,17), (5,35), (w,44981), (a,63748), (_,1), (O,9293), (i,32292), (y,21879), (A,21088), (u,7667), (#,3), (I,29875), (},2), (o,34201), (k,5789), (9,28), (3,59), (],7), (K,3629), (q,1332), (-,52), (?,2), (S,13062), (C,11071), (E,8266), (Y,3976), (U,1503), (1,458), (g,14703), ([,2073), (W,14616), (m,46233), (c,23496))
 ```
 
-##C. Caching
+## C. Caching
 Spark's caching pulls data into a cluster-wide in-memory cache (i.e. the data is accessible from any node in the cluster). You can easily memcache data that will be accessed repeatedly. Using the above wordCounts example:
 ```scala
 scala> wordCounts.cache()
@@ -121,7 +121,7 @@ scala> wordCounts.count()
 res2: Long = 67780
 ```
 
-##D. Self-contained Applications
+## D. Self-contained Applications
 * See CountingShakespeare.scala and build.sbt
 ```scala
 import org.apache.spark.SparkContext
@@ -145,7 +145,7 @@ object CountingShakespeare {
 * Unlike `spark-shell`, which initializes its own `SparkContext` with its own configuration, here we must explicitly initialize a `SparkContext` as part of the program
     - We pass the SparkContext constructor a SparkConf object which contains information about our application: `val sc = new SparkContext(conf)`
 
-###.sbt
+### .sbt
 * Our application depends on the Spark API, so we’ll also include an sbt config file, build.sbt, which explains that Spark is a dependency.
 ```scala
 name := "Simple Project"
@@ -153,7 +153,7 @@ version := "1.0"
 scalaVersion := "2.11.7"
 libraryDependencies += "org.apache.spark" %% "spark-core" % "2.1.1"
 ```
-###Directory Layout
+### Directory Layout
 * For sbt to work, we’ll need to locate SimpleApp.scala and build.sbt in a typical directory structure.
 ```bash
 # Your directory layout should look like this
@@ -165,7 +165,7 @@ $ find .
 ./src/main/scala
 ./src/main/scala/CountingShakespeare.scala
 ```
-###JAR
+### JAR
 With the directory structure in place, we can create a JAR package containing the application’s code, then use the spark-submit script to run our program.
 ```bash
 # Package a jar containing your application
@@ -180,6 +180,5 @@ $ YOUR_SPARK_HOME/bin/spark-submit \
 ...
 ```
 
-###
-FOOTNOTES
+### FOOTNOTES
 - Prevent local derby and metastoreDB: https://stackoverflow.com/questions/38377188/how-to-get-rid-of-derby-log-metastore-db-from-spark-shell
