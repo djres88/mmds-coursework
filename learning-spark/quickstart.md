@@ -2,16 +2,16 @@ Working on https://spark.apache.org/docs/1.2.0/quick-start.html, w/ a twist to m
 
 #Part I: Spark Shell
 
-##Intro 
+##Intro
 By now you should have all the things installed. **TODO: Write instructions**
 ###Shell Setup
-Note: By default, the shell will launch from the directory in which you run `spark-shell`. The Apache "quick start" instructs you to run the shell from the main directory of your spark installation (i.e. `./bin/spark-shell`), but it's reasonably likely that your command will differ based on your machine's setup and how you installed spark. If you used brew to install, for example, the command would be `./usr/local/spark-shell` or `/usr/local/spark-shell`. Our project (see below) will attempt to be agnostic about your setup. 
+Note: By default, the shell will launch from the directory in which you run `spark-shell`. The Apache "quick start" instructs you to run the shell from the main directory of your spark installation (i.e. `./bin/spark-shell`), but it's reasonably likely that your command will differ based on your machine's setup and how you installed spark. If you used brew to install, for example, the command would be `./usr/local/spark-shell` or `/usr/local/spark-shell`. Our project (see below) will attempt to be agnostic about your setup.
 
 We'll start by creating a new project directory (anywhere you keep your projects) called HelloSpark. Run the following in your terminal:
 ```bash
 mkdir HelloSpark
 ```
-Cool beans. Next, let's test out spark-shell. 
+Cool beans. Next, let's test out spark-shell.
 ```bash
 spark-shell
 ```
@@ -21,7 +21,7 @@ We're not quite ready to play around with the shell yet, though. Your setup work
 ```bash
 ls
 # metastore_db derby.log
-``` 
+```
 If you don't see these files, feel free to move on to the project setup section.
 
 These two files, metastore_db and derby.log, hold spark's (something or other -- sql-like db) for the session. If you start a new spark-shell session from this directory, it may complain that these files already exist; you'll see many more error logs than when you launched spark-shell for the first time from this directory. But even if you're not getting errors, it's a little annoying to have these extra spark files show up in any directory where you run spark-shell. They're not particularly important; you just want a REPL.
@@ -42,9 +42,9 @@ Now, every time you run spark-shell, the metastore_db and derby.log files will b
 
 
 ###Project Setup
-We're ready to set up a project. Let's grab a big text file so that we can start playing with spark-shell! 
+We're ready to set up a project. Let's grab a big text file so that we can start playing with spark-shell!
 
-Following the hadoop intro assignment from a course I'm taking -- see mmds at https://lagunita.stanford.edu/courses/course-v1:ComputerScience+MMDS+Fall2016/about -- I'll use the complete works of Shakespeare. You should feel free to choose any file you want, though. Basketball play by play logs? Song lyrics? Abset strange formatting issues, any massive any text file will do. 
+Following the hadoop intro assignment from a course I'm taking -- see mmds at https://lagunita.stanford.edu/courses/course-v1:ComputerScience+MMDS+Fall2016/about -- I'll use the complete works of Shakespeare. You should feel free to choose any file you want, though. Basketball play by play logs? Song lyrics? Abset strange formatting issues, any massive any text file will do.
 
 To get the Shakespeare file, run the following in your terminal:
 ```bash
@@ -56,11 +56,11 @@ Now we have our input file. Let's see what's in there.
 ATTRIBUTION NOTE: The following is all based on / largely taken from the quickstart, with edits and clarifications where applicable.
 
 ##A. Spark & `spark-shell` Basics
-To start up the spark-shell, run `spark-shell`. You should see logs, followed by a command prompt (`>scala`). Minor warnings are normal, errors are not. 
+To start up the spark-shell, run `spark-shell`. You should see logs, followed by a command prompt (`>scala`). Minor warnings are normal, errors are not.
 
 So what's here?
 * Spark’s primary abstraction is a distributed collection of items called a *Resilient Distributed Dataset (RDD)*.
-    - RDDs can be created from Hadoop InputFormats (such as HDFS files) or by transforming other RDDs. 
+    - RDDs can be created from Hadoop InputFormats (such as HDFS files) or by transforming other RDDs.
     - For example, to create a new RDD from an input file (which in our case contains the complete works of Shakespeare), you could transform the input file to an RDD as follows:
 ```scala
 scala> val shakespeare = sc.textFile("input.txt")
@@ -109,7 +109,7 @@ res8: Array[(AnyVal, Int)] = Array((T,21999), (d,23531), (z,53), (",356), (4,46)
 ```
 
 ##C. Caching
-Spark's caching pulls data into a cluster-wide in-memory cache (i.e. the data is accessible from any node in the cluster). You can easily memcache data that will be accessed repeatedly. Using the above wordCounts example: 
+Spark's caching pulls data into a cluster-wide in-memory cache (i.e. the data is accessible from any node in the cluster). You can easily memcache data that will be accessed repeatedly. Using the above wordCounts example:
 ```scala
 scala> wordCounts.cache()
 res0: wordCounts.type = ShuffledRDD[4] at reduceByKey at <console>:26
@@ -141,7 +141,7 @@ object CountingShakespeare {
   }
 }
 ```
-* Note that applications should define a main() method instead of extending scala.App. 
+* Note that applications should define a main() method instead of extending scala.App.
 * Unlike `spark-shell`, which initializes its own `SparkContext` with its own configuration, here we must explicitly initialize a `SparkContext` as part of the program
     - We pass the SparkContext constructor a SparkConf object which contains information about our application: `val sc = new SparkContext(conf)`
 
@@ -154,7 +154,7 @@ scalaVersion := "2.11.7"
 libraryDependencies += "org.apache.spark" %% "spark-core" % "2.1.1"
 ```
 ###Directory Layout
-* For sbt to work, we’ll need to locate SimpleApp.scala and build.sbt in a typical directory structure. 
+* For sbt to work, we’ll need to locate SimpleApp.scala and build.sbt in a typical directory structure.
 ```bash
 # Your directory layout should look like this
 $ find .
@@ -163,7 +163,7 @@ $ find .
 ./src
 ./src/main
 ./src/main/scala
-./src/main/scala/SimpleApp.scala
+./src/main/scala/CountingShakespeare.scala
 ```
 ###JAR
 With the directory structure in place, we can create a JAR package containing the application’s code, then use the spark-submit script to run our program.
@@ -176,7 +176,6 @@ $ sbt package
 # Use spark-submit to run your application
 $ YOUR_SPARK_HOME/bin/spark-submit \
   --class "SimpleApp" \
-  --master local[4] \
   target/scala-2.11/simple-project_2.11-1.0.jar
 ...
 ```

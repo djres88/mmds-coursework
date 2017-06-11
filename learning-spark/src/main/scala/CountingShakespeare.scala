@@ -8,9 +8,14 @@ object CountingShakespeare {
     val conf = new SparkConf().setAppName("Simple Application")
     val sc = new SparkContext(conf)
     val logData = sc.textFile(logFile, 2).cache()
-    val numAs = logData.filter(line => line.contains("Lear")).count()
-    val numBs = logData.filter(line => line.contains("Gwendolyn")).count()
-    println(s"Lines with a: $numAs, Lines with b: $numBs")
+    val countLear = logData.filter(line => line.contains("Lear")).count()
+    val countCordelia = logData.filter(line => line.contains("Cordelia")).count()
+    val countGoneril = logData.filter(line => line.contains("Goneril")).count()
+    val countRegan = logData.filter(line => line.contains("Regan")).count()
+    println(s"Lear lines: $countLear")
+    println(s"Cordelia lines: $countCordelia")
+    println(s"Goneril lines: $countGoneril")
+    println(s"Regan lines: $countRegan")
     sc.stop()
   }
 }

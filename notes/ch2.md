@@ -1,4 +1,5 @@
-NOTE: Testing https://atom.io/packages/markdown-preview-plus and https://github.com/atom-community/markdown-preview-plus/blob/v2.4.9/docs/math.md
+NOTE: Testing https://atom.io/packages/markdown-preview-plus and https://github.com/atom-community/markdown-preview-plus/blob/v2.4.9/docs/math.md.
+- Cheatsheet: http://csrgxtu.github.io/2015/03/20/Writing-Mathematic-Fomulars-in-Markdown/
 
 \[
 R_{\mu \nu}- {1 \over 2}g_{\mu \nu}\,R + g_{\mu \nu} \Lambda
