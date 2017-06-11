@@ -5,7 +5,7 @@ import org.apache.spark.SparkConf
 object CountingShakespeare {
   def main(args: Array[String]) {
     val logFile = "./input.txt" // Should be some file on your system
-    val conf = new SparkConf().setAppName("Simple Application")
+    val conf = new SparkConf().setAppName("Counting Shakespeare")
     val sc = new SparkContext(conf)
     val logData = sc.textFile(logFile, 2).cache()
     val countLear = logData.filter(line => line.contains("Lear")).count()
