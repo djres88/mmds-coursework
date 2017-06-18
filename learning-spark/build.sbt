@@ -2,6 +2,7 @@ name := "Counting Shakespeare"
 
 version := "1.0"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
+sparkVersion := "2.1.0"
 
-libraryDependencies += "org.apache.spark" %% "spark-core" % "2.1.1"
+sparkComponents ++= Seq("sql", "hive")
